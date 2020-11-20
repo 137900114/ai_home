@@ -130,7 +130,7 @@ def a_start_cost(problem, successor, node, heuristic):
     cost = problem.get_costs(path)
     (next_state,trash2,next_cost) = successor
 
-    cost += heuristic(problem,next_state)
+    cost += heuristic(problem,next_state) + next_cost
 
     "*** END YOUR CODE HERE ***"
     return cost
@@ -140,7 +140,8 @@ def a_start_search(problem):
     path = []
     step = 0
     "*** YOUR CODE HERE ***"
-    # TODO a_start_search
+    path,step = search(problem,util.PriorityQueue(),\
+                       a_start_cost,a_start_heuristic)
 
     "*** END YOUR CODE HERE ***"
     return path, step
