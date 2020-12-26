@@ -242,6 +242,14 @@ def getJoinTableOfVariable(bayesNet,var,conditions,variables):
         if condIndex < 0:
             return (None,-1)
         table =  joinFactors(table,condTable)
+
+    margVarList = []
+    for v in table.columns:
+        if v != var and v != 'probs':
+                margVarList.append(v)
+    for v in margVarList:
+        table = marginalizeFactor(table,v)
+
     return (table,index)
         
 def delVariablesFromNet(Net,conditions,variables,targets):
@@ -283,27 +291,21 @@ def marginalizeNetworkVariables(bayesNet, hiddenVar):
             conditions.append(condition)
 
         (varTable,index) = getJoinTableOfVariable(marginalizeBayesNet,var,conditions,variables)
-        if index < 0:
-            return bayesNet
 
-        delVariables = list(varTable.columns)
-        delVariables.remove('probs')
-        #for label in variables[index]:
-        #    delVariables.remove(label)
-        #if len(variables[index]) == 1:
-        #    delVariables.append(label)
-        #else:
-        #    del marginalizeBayesNet[index][var]
-        delVariablesFromNet(marginalizeBayesNet,conditions,variables,delVariables)
+        if index < 0:
+            continue
+        del marginalizeBayesNet[index]
+        del conditions[index]
+        del variables[index]
         for i in range(len(conditions)):
             targetTable = marginalizeBayesNet[i]
             if var in conditions[i]:
                 targetTable = marginalizeFactor(joinFactors(varTable,targetTable),var)
                 [variables[i],conditions[i]] = getVariableAndCondition(targetTable)
-            for variable in varTable.columns[:-1]:
-                if variable in variables[i]:
-                    targetTable = marginalizeFactor(targetTable,variable)
-                    [variables[i],conditions[i]] = getVariableAndCondition(targetTable)
+            #for variable in varTable.columns[:-1]:
+            #    if variable in variables[i]:
+            #        targetTable = marginalizeFactor(targetTable,variable)
+            #        [variables[i],conditions[i]] = getVariableAndCondition(targetTable)
             marginalizeBayesNet[i] = targetTable
         for i in range(len(marginalizeBayesNet) - 1,-1,-1):
             if marginalizeBayesNet[i].empty:
@@ -342,10 +344,12 @@ def evidenceUpdateNet(bayesNet, evidenceVars, evidenceVals):
 
         (eTable,eIndex) = getJoinTableOfVariable(updatedBayesNet,eVar,conditions,variables)
 
-        delVariables = list(eTable.columns)
-        delVariables.remove('probs')
-        delVariablesFromNet(updatedBayesNet,conditions,variables,delVariables)
+        if eIndex < 0:
+            continue
 
+        del updatedBayesNet[eIndex]
+        del conditions[eIndex]
+        del variables[eIndex]
 
         assignedList = []
         eVarVals = list(eTable[eVar])
@@ -354,12 +358,6 @@ def evidenceUpdateNet(bayesNet, evidenceVars, evidenceVals):
                 assignedList.append(i)
         eTable = eTable.iloc[assignedList]
         updatedBayesNet.append(eTable)
-        
-        #delVars = list(eTable.columns)
-        #delVars.remove('probs')
-        #for label in variables[eIndex]:
-        #    delVars.remove(label)
-        #delVariablesFromNet(updatedBayesNet,conditions,variables,delVars)
 
         updatedBayesNet = marginalizeNetworkVariables(updatedBayesNet,eVar)
     # end of your code

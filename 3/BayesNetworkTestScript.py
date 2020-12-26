@@ -7,7 +7,7 @@ import pickle
 # Test scripts start from here
 ###########################################################################
 
-#riskFactorNet = pd.read_csv('RiskFactorsData.csv')
+riskFactorNet = pd.read_csv('RiskFactorsData.csv')
 
 #factors = riskFactorNet.columns
 
@@ -67,7 +67,14 @@ for health in healthoutcomes:
 
 for health in healthoutcomes:
     # TODO: your code
-
+    
+    factorLis = list(factors)
+    for i in [health, 'smoke', 'exercise', 'long_sit', 'stay_up']:
+        factorLis.remove(i)
+    margVars = factorLis
+    obsVars = ['smoke', 'exercise', 'long_sit', 'stay_up']
+    obsVals = [2, 1, 2, 2]
+    p = inference(risk_net, margVars, obsVars, obsVals)
     # end your code
     print('The probability of %s if I have good habits is: \n' % (health), p, '\n')
 
@@ -76,7 +83,12 @@ for health in healthoutcomes:
 
 for health in healthoutcomes:
     # TODO: your code
-
+    factorLis = list(factors)
+    for i in [health,'bp','cholesterol','bmi']:
+        factorLis.remove(i)
+    obsVars = ['bp','cholesterol','bmi']
+    obsVals = [1,1,3]
+    p = inference(risk_net,factorLis,obsVars,obsVals)
     # end your code
     print('The probability of %s if I have poor health is: \n' % (health), p, '\n')
 
@@ -85,7 +97,12 @@ for health in healthoutcomes:
 
 for health in healthoutcomes:
     # TODO: your code
-
+    factorLis = list(factors)
+    for i in [health,'bp','cholesterol','bmi']:
+        factorLis.remove(i)
+    obsVars = ['bp','cholesterol','bmi']
+    obsVals = [3,2,2]
+    p = inference(risk_net,factorLis,obsVars,obsVals)
     # end your code
     print('The probability of %s if I have good health is: \n' % (health), p, '\n')
 
@@ -100,9 +117,14 @@ for health in healthoutcomes:
     result = {}
     for level in range(1, 9):
         # TODO: your code
-
+        factorLis = list(factors)
+        for i in [health,'income']:
+            factorLis.remove(i)
+        obsVars = ['income']
+        obsVals = [level]
+        p = inference(risk_net,factorLis,obsVars,obsVals)
+        result[level] = list(p['probs'])
         # end your code
-        None
     probs[health] = result
 
 # plot probability of health outcome given income levelS
@@ -134,9 +156,12 @@ cholesterol = readFactorTablefromData(riskFactorNet, ['cholesterol', 'exercise',
 
 # add edges from smoke to each outcome and edges from exercise to each outcome
 diabetes_with_smoke_exercise = readFactorTablefromData(riskFactorNet, ['diabetes', 'bmi', 'smoke', 'exercise'])
-stroke_with_smoke_exercise = None
-attack_with_smoke_exercise = None
-angina_with_smoke_exercise = None
+#stroke = readFactorTablefromData(riskFactorNet, ['stroke', 'bmi', 'bp', 'cholesterol'])
+#attack = readFactorTablefromData(riskFactorNet, ['attack', 'bmi', 'bp', 'cholesterol'])
+#angina = readFactorTablefromData(riskFactorNet, ['angina', 'bmi', 'bp', 'cholesterol'])
+stroke_with_smoke_exercise = readFactorTablefromData(riskFactorNet,['stroke', 'bmi', 'bp', 'cholesterol','smoke','exercise'])
+attack_with_smoke_exercise = readFactorTablefromData(riskFactorNet,['attack', 'bmi', 'bp', 'cholesterol','smoke','exercise'])
+angina_with_smoke_exercise = readFactorTablefromData(riskFactorNet, ['angina', 'bmi', 'bp', 'cholesterol','smoke','exercise'])
 
 # TODO: your code
 
@@ -152,7 +177,14 @@ healthoutcomes = ['diabetes', 'stroke', 'attack', 'angina']
 
 for health in healthoutcomes:
     # TODO: your code
-
+    factorLis = list(factors)
+    for i in [health, 'smoke', 'exercise', 'long_sit', 'stay_up']:
+        factorLis.remove(i)
+    margVars = factorLis
+    obsVars = ['smoke', 'exercise', 'long_sit', 'stay_up']
+    obsVals = [1, 2, 1, 1]
+    p = inference(risk_net, margVars, obsVars, obsVals)
+    print('The probability of %s if I have bad habits is: \n' % (health), p, '\n')
     # end your code
     print('The probability of %s if I have bad habits is: \n' % (health), p, '\n')
 
@@ -161,7 +193,13 @@ for health in healthoutcomes:
 
 for health in healthoutcomes:
     # TODO: your code
-
+    factorLis = list(factors)
+    for i in [health, 'smoke', 'exercise', 'long_sit', 'stay_up']:
+        factorLis.remove(i)
+    margVars = factorLis
+    obsVars = ['smoke', 'exercise', 'long_sit', 'stay_up']
+    obsVals = [2, 1, 2, 2]
+    p = inference(risk_net, margVars, obsVars, obsVals)
     # end your code
     print('The probability of %s if I have good habits is: \n' % (health), p, '\n')
 
@@ -170,7 +208,12 @@ for health in healthoutcomes:
 
 for health in healthoutcomes:
     # TODO: your code
-
+    factorLis = list(factors)
+    for i in [health,'bp','cholesterol','bmi']:
+        factorLis.remove(i)
+    obsVars = ['bp','cholesterol','bmi']
+    obsVals = [1,1,3]
+    p = inference(risk_net,factorLis,obsVars,obsVals)
     # end your code
     print('The probability of %s if I have poor health is: \n' % (health), p, '\n')
 
@@ -179,7 +222,12 @@ for health in healthoutcomes:
 
 for health in healthoutcomes:
     # TODO: your code
-
+    factorLis = list(factors)
+    for i in [health,'bp','cholesterol','bmi']:
+        factorLis.remove(i)
+    obsVars = ['bp','cholesterol','bmi']
+    obsVals = [3,2,2]
+    p = inference(risk_net,factorLis,obsVars,obsVals)
     # end your code
     print('The probability of %s if I have good health is: \n' % (health), p, '\n')
 
@@ -191,7 +239,7 @@ print('Question5 -------------------------------------------')
 stroke_with_diabetes = None
 
 # TODO: your code
-
+stroke_with_diabetes = readFactorTablefromData(riskFactorNet,['stroke', 'bmi', 'bp', 'cholesterol','smoke','exercise','diabetes'])
 # end your code
 
 third_risk_net = [income, exercise, long_sit, stay_up, smoke, bmi, bp, cholesterol, diabetes_with_smoke_exercise,
